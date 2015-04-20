@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity$PlaceholderFragment">
+
+   <include
+       layout="@layout/no_item_layout"/>
+
+    <ListView
+        android:id="@+id/lists"
+        android:layout_margin="@dimen/margin_plus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <at.markushi.ui.CircleButton
+        android:id="@+id/plusBtn"
+        android:layout_width="@dimen/norm_icon_size"
+        android:layout_height="@dimen/norm_icon_size"
+        android:src="@drawable/ic_plus"
+        android:padding="10dp"
+        android:layout_margin="@dimen/margin_plus"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        app:cb_color="@color/plusBtn"
+        app:cb_pressedRingWidth="10dip" />
+
+</RelativeLayout>

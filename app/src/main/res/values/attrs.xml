@@ -1,0 +1,6 @@
+<resources>
+    <declare-styleable name="ToDoView">
+        <attr name="todotitle" format="string" />
+        <attr name="tododescription" format="string" />
+    </declare-styleable>
+</resources>

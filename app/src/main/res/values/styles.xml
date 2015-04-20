@@ -1,0 +1,26 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="Base" >
+    </style>
+
+    <style name="CustomText" parent="Base">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">@dimen/textSize</item>
+        <item name="android:padding">5sp</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+
+    <style name="CustomTextDescr" parent="Base">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">@dimen/textSizeDescr</item>
+        <item name="android:padding">5sp</item>
+    </style>
+
+
+</resources>

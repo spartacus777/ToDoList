@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="red">#db0400</color>
+    <color name="white">#ffffff</color>
+
+    <color name="backgroundColor">@color/white</color>
+
+    <color name="deleteBtn">#d7d6d6</color>
+    <color name="plusBtn">#d7d6d6</color>
+
+    <color name="black">#000000</color>
+
+    <color name="btn_pressed">#bebebe</color>
+    <color name="btn_normal">#d7d6d6</color>
+
+    <color name="blur_color">#D9d7d6d6</color>
+
+</resources>
