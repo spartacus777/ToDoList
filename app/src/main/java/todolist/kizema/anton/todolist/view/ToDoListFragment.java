@@ -1,4 +1,4 @@
-package todolist.kizema.anton.todolist;
+package todolist.kizema.anton.todolist.view;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -17,12 +17,12 @@ import android.widget.ListView;
 import java.util.Set;
 
 import at.markushi.ui.CircleButton;
+import todolist.kizema.anton.todolist.R;
 import todolist.kizema.anton.todolist.control.CustomMultiChoiceModeListener;
+import todolist.kizema.anton.todolist.control.ToDoViewEntry;
 import todolist.kizema.anton.todolist.control.adapter.ToDoListAdapter;
 import todolist.kizema.anton.todolist.model.Entry;
 import todolist.kizema.anton.todolist.model.EntryPool;
-import todolist.kizema.anton.todolist.view.EditEntryDialogFragment;
-import todolist.kizema.anton.todolist.view.ToDoViewEntry;
 
 
 public class ToDoListFragment extends Fragment implements ToDoListAdapter.AdapterDataListener,
@@ -36,6 +36,7 @@ public class ToDoListFragment extends Fragment implements ToDoListAdapter.Adapte
     private EntryPool entryPool;
 
     private CircleButton plusBtn;
+    private Entry previous;
 
     private OnToDoSelectedListener onToDoSelectedListener;
 
@@ -141,6 +142,10 @@ public class ToDoListFragment extends Fragment implements ToDoListAdapter.Adapte
         entryPool.load();
         adapter.notifyDataSetChanged();
         getActivity().setTitle(getString(R.string.main_act_title));
+    }
+
+    public void setSelected(int pos){
+        Entry entry = adapter.getItem(pos);
     }
 
     public void updateTextSizes(){

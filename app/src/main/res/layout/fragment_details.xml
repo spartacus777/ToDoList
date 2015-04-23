@@ -3,14 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="todolist.kizema.anton.todolist.DetailsFragment">
+    android:background="@color/white"
+    tools:context="todolist.kizema.anton.todolist.view.DetailsFragment">
 
 
     <EditText
         style="@style/CustomText"
         android:id="@+id/etTitle"
         android:hint="@string/add_title"
-        android:layout_margin="@dimen/margin_norm"
+        android:layout_margin="@dimen/margin_plus"
         android:maxLines="1"
         android:lines="1"
         android:singleLine="true"
@@ -30,10 +31,13 @@
         android:id="@+id/etDescr"
         android:layout_below="@id/etTitle"
         android:hint="@string/add_descr"
-        android:layout_margin="@dimen/margin_norm"
+        android:layout_margin="@dimen/margin_plus"
         android:background="@drawable/title"
         android:padding="5dp"
         android:gravity="left"
+        android:scrollbarStyle="insideInset"
+        android:scrollbars="vertical"
+        android:overScrollMode="always"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

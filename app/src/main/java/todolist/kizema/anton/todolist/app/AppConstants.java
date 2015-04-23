@@ -1,4 +1,4 @@
-package todolist.kizema.anton.todolist;
+package todolist.kizema.anton.todolist.app;
 
 public class AppConstants {
 

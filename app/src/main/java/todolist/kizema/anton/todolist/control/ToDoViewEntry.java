@@ -1,4 +1,4 @@
-package todolist.kizema.anton.todolist.view;
+package todolist.kizema.anton.todolist.control;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import todolist.kizema.anton.todolist.App;
-import todolist.kizema.anton.todolist.AppConstants;
+import todolist.kizema.anton.todolist.app.App;
+import todolist.kizema.anton.todolist.app.AppConstants;
 import todolist.kizema.anton.todolist.R;
 import todolist.kizema.anton.todolist.model.Entry;
 
@@ -71,16 +71,20 @@ public class ToDoViewEntry {
 
         titleView.setTextSize(titleSize);
         descrView.setTextSize(descrSize);
+
+        deleteDelegate.update();
     }
 
     private void init() {
         titleView = (TextView) parent.findViewById(R.id.tvTitle);
         descrView = (TextView) parent.findViewById(R.id.tvDescr);
-
-        updateTextSizes();
-
         crossView = (ImageView) parent.findViewById(R.id.crossView);
         removeView = (ImageView) parent.findViewById(R.id.remove);
+
+        deleteDelegate = new DeleteTouchListener();
+        deleteDelegate.init();
+
+        updateTextSizes();
 
         removeView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,10 +95,7 @@ public class ToDoViewEntry {
             }
         });
 
-        deleteDelegate = new DeleteTouchListener();
         crossView.setOnTouchListener(deleteDelegate);
-
-        deleteDelegate.init();
     }
 
     private class DeleteTouchListener implements View.OnTouchListener{
@@ -104,7 +105,7 @@ public class ToDoViewEntry {
 
         private boolean userInteraction = false;
         private ImageView blurImage;
-        float posX = getParentWidth() - App.getPixel(36+10+10);
+        float posX = getParentWidth() - App.getPixel(46+2);
 
         float downX;
         long timeDown;
@@ -211,6 +212,19 @@ public class ToDoViewEntry {
             crossView.setScaleY(SCALE_NORM);
         }
 
+        public void update(){
+            titleView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            int h = titleView.getMeasuredHeight();
+
+            descrView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            h += descrView.getMeasuredHeight();
+            Log.d("ANT", "HEIGHT : "+h);
+
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, h);
+
+            blurImage.setLayoutParams(params);
+        }
+
         public void init() {
             Log.d("ANT", "onWindowFocusChanged");
 
@@ -220,10 +234,7 @@ public class ToDoViewEntry {
 
             blurImage = new ImageView(parent.getContext());
 
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-                    App.getPixel(50));
-
-            blurImage.setLayoutParams(params);
+            update();
             blurImage.setBackgroundColor(parent.getResources().getColor(R.color.blur_color));
             blurImage.setX(getParentWidth());
             parent.addView(blurImage);

@@ -1,8 +1,12 @@
-package todolist.kizema.anton.todolist;
+package todolist.kizema.anton.todolist.view;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
+import android.content.res.Configuration;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.method.KeyListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,9 +14,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import at.markushi.ui.CircleButton;
+import todolist.kizema.anton.todolist.R;
 import todolist.kizema.anton.todolist.model.Entry;
 import todolist.kizema.anton.todolist.model.EntryPool;
 
@@ -25,6 +31,8 @@ public class DetailsFragment extends Fragment {
     private CircleButton editButton;
     private EditText etTitle, etDescr;
     private boolean isEditMode = false;
+
+    private String savedTitle, savedDescr;
 
     private Entry entry;
     private int pos;
@@ -58,9 +66,13 @@ public class DetailsFragment extends Fragment {
 
         etTitle = (EditText) getActivity().findViewById(R.id.etTitle);
         etDescr = (EditText) getActivity().findViewById(R.id.etDescr);
+        editButton = (CircleButton) getActivity().findViewById(R.id.editButton);
+
+        etTitle.setTag(etTitle.getKeyListener());
+        etDescr.setTag(etDescr.getKeyListener());
+
         enable(false);
 
-        editButton = (CircleButton) getActivity().findViewById(R.id.editButton);
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,20 +107,44 @@ public class DetailsFragment extends Fragment {
         if (menuItem != null) {
             menuItem.setVisible(enable);
         }
-        etTitle.setEnabled(enable);
-        etDescr.setEnabled(enable);
-
-        isEditMode = enable;
 
         if (enable){
+            savedTitle = etTitle.getText().toString();
+            savedDescr = etDescr.getText().toString();
+
+            etTitle.setKeyListener((KeyListener)etTitle.getTag());
+            etDescr.setKeyListener((KeyListener)etDescr.getTag());
+            editButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_ok_small));
+
+            getActivity().getActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+                    .getColor(R.color.ab_edit_color)));
             getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-            getActivity().getActionBar().setDisplayShowHomeEnabled(true);
             getActivity().setTitle(getString(R.string.edit_details_activity));
+            editButton.setColor(getResources().getColor(R.color.ab_edit_color));
+
+            InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            etDescr.requestFocus();
+            inputMethodManager.showSoftInput(etDescr, InputMethodManager.SHOW_IMPLICIT);
         } else {
-            getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
-            getActivity().getActionBar().setDisplayShowHomeEnabled(false);
+            etTitle.setKeyListener(null);
+            etDescr.setKeyListener(null);
+            editButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_pen));
+
+            getActivity().getActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+                    .getColor(R.color.ab_color)));
+            editButton.setColor(getResources().getColor(R.color.plusBtn));
             getActivity().setTitle(getString(R.string.details_activity));
+            if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+            }
+
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(etTitle.getWindowToken(), 0);
+            imm.hideSoftInputFromWindow(etDescr.getWindowToken(), 0);
         }
+
+        isEditMode = enable;
     }
 
     public void onEditClicked(){
@@ -135,6 +171,7 @@ public class DetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Log.i("ANT", "DetailsFragment :: onCreate");
         setHasOptionsMenu(true);
+        getActivity().getActionBar().setDisplayShowHomeEnabled(true);
     }
 
     @Override
@@ -170,6 +207,8 @@ public class DetailsFragment extends Fragment {
             case android.R.id.home:
                 if (isEditMode){
                     enable(false);
+                    etTitle.setText(savedTitle);
+                    etDescr.setText(savedDescr);
                     return true;
                 }
                 getActivity().onBackPressed();

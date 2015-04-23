@@ -42,5 +42,4 @@ public class Entry implements Serializable {
         return super.hashCode() + description.hashCode() + title.hashCode();
     }
 
-
 }

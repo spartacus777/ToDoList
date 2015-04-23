@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import todolist.kizema.anton.todolist.R;
+import todolist.kizema.anton.todolist.control.ToDoViewEntry;
 import todolist.kizema.anton.todolist.model.Entry;
 import todolist.kizema.anton.todolist.model.EntryPool;
-import todolist.kizema.anton.todolist.view.ToDoViewEntry;
 
 
 public class ToDoListAdapter extends BaseAdapter implements ToDoViewEntry.OnRemoveListener {
@@ -21,6 +21,7 @@ public class ToDoListAdapter extends BaseAdapter implements ToDoViewEntry.OnRemo
     private Map<View, ToDoViewEntry> map;
     private LayoutInflater inflater;
     private AdapterDataListener listener;
+    private Context context;
 
     private EntryPool pool;
 
@@ -33,6 +34,7 @@ public class ToDoListAdapter extends BaseAdapter implements ToDoViewEntry.OnRemo
         super();
 
         this.pool = pool;
+        this.context = context;
         this.listener = listener;
         inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);

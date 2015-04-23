@@ -7,7 +7,7 @@
 
     <dimen name="norm_icon_size">68dp</dimen>
     <dimen name="margin_norm">15dp</dimen>
-    <dimen name="margin_plus">10dp</dimen>
+    <dimen name="margin_plus">2dp</dimen>
 
 
 </resources>

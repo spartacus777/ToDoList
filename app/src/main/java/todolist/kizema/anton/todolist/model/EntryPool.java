@@ -8,12 +8,13 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import todolist.kizema.anton.todolist.App;
+import todolist.kizema.anton.todolist.app.App;
+import todolist.kizema.anton.todolist.helpers.DBHelper;
 
 public class EntryPool {
 
     private List <Entry> entries;
-    DBHelper dbHelper;
+    private DBHelper dbHelper;
 
     private boolean wasLoad = false;
 

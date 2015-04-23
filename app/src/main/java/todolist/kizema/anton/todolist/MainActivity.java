@@ -3,6 +3,7 @@ package todolist.kizema.anton.todolist;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ViewConfiguration;
@@ -12,9 +13,12 @@ import java.lang.reflect.Field;
 
 import todolist.kizema.anton.todolist.model.Entry;
 import todolist.kizema.anton.todolist.model.EntryPool;
+import todolist.kizema.anton.todolist.view.DetailsFragment;
 import todolist.kizema.anton.todolist.view.EditEntryDialogFragment;
+import todolist.kizema.anton.todolist.view.SettingsFragment;
+import todolist.kizema.anton.todolist.view.ToDoListFragment;
 
-import static todolist.kizema.anton.todolist.DetailsFragment.OnUpdateAdapterListener;
+import static todolist.kizema.anton.todolist.view.DetailsFragment.OnUpdateAdapterListener;
 
 
 public class MainActivity extends Activity implements ToDoListFragment.OnToDoSelectedListener,
@@ -24,6 +28,7 @@ public class MainActivity extends Activity implements ToDoListFragment.OnToDoSel
     private static final String SETTINGS_FRAGMENT = "SETTINGS_FRAGMENT";
     private static final String DETAILS_FRAGMENT = "DETAILS_FRAGMENT";
 
+    private SettingsFragment settingsFragment;
     private ToDoListFragment fragment;
     private DetailsFragment detailsFragment;
     private FrameLayout frameDetailsFragment;
@@ -57,6 +62,10 @@ public class MainActivity extends Activity implements ToDoListFragment.OnToDoSel
                         .commit();
             }
         }
+
+        getActionBar().setDisplayShowHomeEnabled(true);
+        getActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
+                .getColor(R.color.ab_color)));
     }
 
     private void makeActionOverflowMenuShown() {
@@ -84,6 +93,7 @@ public class MainActivity extends Activity implements ToDoListFragment.OnToDoSel
         if (getFragmentManager().getBackStackEntryCount() > 0 ){
             if ( SETTINGS_FRAGMENT.equalsIgnoreCase(getFragmentManager().
                     getBackStackEntryAt(getFragmentManager().getBackStackEntryCount()-1).getName())){
+                Log.i("ANT", "onBackPressed");
                 fragment.updateTextSizes();
             }
 
@@ -91,11 +101,6 @@ public class MainActivity extends Activity implements ToDoListFragment.OnToDoSel
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
     }
 
     @Override
@@ -139,17 +144,34 @@ public class MainActivity extends Activity implements ToDoListFragment.OnToDoSel
                     .commit();
         }
 
+        if (settingsFragment != null && settingsFragment.isAdded()){
+            Log.i("ANT", "REMOVE SettingsFragment");
+            getFragmentManager().beginTransaction()
+                    .remove(settingsFragment)
+                    .commit();
+
+            settingsFragment = null;
+        }
+
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onSettingsPressed() {
-        SettingsFragment settingsFragment = new SettingsFragment();
+        settingsFragment = new SettingsFragment();
 
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.container, settingsFragment, SETTINGS_FRAGMENT);
-        transaction.addToBackStack(SETTINGS_FRAGMENT);
-        transaction.commit();
+        if (frameDetailsFragment == null){
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.container, settingsFragment, SETTINGS_FRAGMENT);
+            transaction.addToBackStack(SETTINGS_FRAGMENT);
+            transaction.commit();
+        } else {
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.replace(R.id.detailsFragment, settingsFragment, SETTINGS_FRAGMENT);
+            transaction.addToBackStack(SETTINGS_FRAGMENT);
+            settingsFragment.setToDoListFragment(fragment);
+            transaction.commit();
+        }
     }
 
     @Override
@@ -167,13 +189,23 @@ public class MainActivity extends Activity implements ToDoListFragment.OnToDoSel
 
     @Override
     public void onOkBtnPressed(Entry entry, String title, String descr) {
-        if (frameDetailsFragment != null && !detailsFragment.isAdded()){
-            getFragmentManager().beginTransaction()
-                    .add(R.id.detailsFragment, detailsFragment, DETAILS_FRAGMENT)
-                    .commit();
-        }
-
         fragment.onOkBtnPressed(entry, title, descr);
+
+        if (frameDetailsFragment != null){
+
+            if (detailsFragment == null){
+                detailsFragment = DetailsFragment.newInstance(EntryPool.getPool().getEntries().get(0), 0);
+            }
+
+            if (detailsFragment != null && !detailsFragment.isAdded()) {
+                getFragmentManager().beginTransaction()
+                        .add(R.id.detailsFragment, detailsFragment, DETAILS_FRAGMENT)
+                        .commit();
+            } else {
+                int last = EntryPool.getPool().getEntries().size() - 1;
+                detailsFragment.setEntry(EntryPool.getPool().getEntries().get(last), last);
+            }
+        }
     }
 
     @Override
@@ -182,9 +214,7 @@ public class MainActivity extends Activity implements ToDoListFragment.OnToDoSel
     }
 
     public void shouldDisplayHomeUp(){
-        boolean canback = getFragmentManager().getBackStackEntryCount()>0;
-        getActionBar().setDisplayHomeAsUpEnabled(canback);
-        getActionBar().setDisplayShowHomeEnabled(canback);
+        getActionBar().setDisplayHomeAsUpEnabled(getFragmentManager().getBackStackEntryCount()>0);
     }
 
     @Override

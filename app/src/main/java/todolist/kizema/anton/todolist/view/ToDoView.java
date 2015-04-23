@@ -9,7 +9,7 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
-import todolist.kizema.anton.todolist.App;
+import todolist.kizema.anton.todolist.app.App;
 import todolist.kizema.anton.todolist.R;
 
 /**

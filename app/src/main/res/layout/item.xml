@@ -29,16 +29,16 @@
 
     <ImageView
         android:id="@+id/crossView"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_pen"/>
+        android:src="@drawable/ic_cross_pen"/>
 
     <ImageView
         android:id="@+id/remove"
         android:alpha="0"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:src="@drawable/ic_dismiss"/>

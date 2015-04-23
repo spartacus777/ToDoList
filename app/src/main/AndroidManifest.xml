@@ -3,7 +3,7 @@
     package="todolist.kizema.anton.todolist" >
 
     <application
-        android:name="todolist.kizema.anton.todolist.App"
+        android:name=".app.App"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/main_act_title"

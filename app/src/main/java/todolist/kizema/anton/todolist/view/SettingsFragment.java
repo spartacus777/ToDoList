@@ -1,15 +1,19 @@
-package todolist.kizema.anton.todolist;
+package todolist.kizema.anton.todolist.view;
 
 import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import todolist.kizema.anton.todolist.R;
+import todolist.kizema.anton.todolist.app.AppConstants;
 
 public class SettingsFragment extends Fragment {
 
@@ -21,12 +25,18 @@ public class SettingsFragment extends Fragment {
 
     private int titleSize, descrSize;
 
+    private ToDoListFragment fragment;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(getActivity().getResources().getString(R.string.setting_title));
-        setRetainInstance(true);
+        setRetainInstance(false);
         setHasOptionsMenu(true);
+    }
+
+    public void setToDoListFragment(ToDoListFragment fragment){
+        this.fragment = fragment;
     }
 
     @Override
@@ -51,6 +61,11 @@ public class SettingsFragment extends Fragment {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 titleSize = progress;
                 tvTitleTextSize.setText(getActivity().getResources().getString(R.string.title_text_size, titleSize));
+                if (fragment != null) {
+                    saveInfoToSP();
+
+                    fragment.updateTextSizes();
+                }
             }
 
             @Override
@@ -72,6 +87,11 @@ public class SettingsFragment extends Fragment {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 descrSize = progress;
                 tvDescrTextSize.setText(getActivity().getResources().getString(R.string.descr_text_size, descrSize));
+                if (fragment != null) {
+                    saveInfoToSP();
+
+                    fragment.updateTextSizes();
+                }
             }
 
             @Override
@@ -101,6 +121,10 @@ public class SettingsFragment extends Fragment {
     public void onStop() {
         super.onStop();
 
+        saveInfoToSP();
+    }
+
+    private void saveInfoToSP(){
         SharedPreferences prefs = getActivity().getSharedPreferences(AppConstants.PREF_FILE_NAME, Context.MODE_PRIVATE);
 
         SharedPreferences.Editor editor = prefs.edit();
@@ -119,6 +143,8 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.d("ANT", " SETTINGS onDetach()");
+        fragment = null;
     }
 
 }

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
@@ -25,7 +26,7 @@
         android:src="@drawable/ic_plus"
         android:padding="10dp"
         android:layout_margin="@dimen/margin_plus"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         app:cb_color="@color/plusBtn"
         app:cb_pressedRingWidth="10dip" />

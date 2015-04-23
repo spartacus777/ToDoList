@@ -1,4 +1,4 @@
-package todolist.kizema.anton.todolist;
+package todolist.kizema.anton.todolist.app;
 
 import android.app.Application;
 import android.content.Context;

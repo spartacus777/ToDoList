@@ -6,7 +6,6 @@
     <color name="backgroundColor">@color/white</color>
 
     <color name="deleteBtn">#d7d6d6</color>
-    <color name="plusBtn">#d7d6d6</color>
 
     <color name="black">#000000</color>
 
@@ -14,5 +13,12 @@
     <color name="btn_normal">#d7d6d6</color>
 
     <color name="blur_color">#D9d7d6d6</color>
+
+    <color name="ab_color">#f98a10</color>
+    <color name="ab_edit_color">#1047f9</color>
+    <color name="plusBtn">@color/ab_color</color>
+
+
+    <color name="greyButtons">#a8a8a8</color>
 
 </resources>
