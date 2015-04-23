@@ -1,7 +1,6 @@
 package todolist.kizema.anton.todolist.model;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -9,9 +8,10 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import todolist.kizema.anton.todolist.App;
+
 public class EntryPool {
 
-    private Context c;
     private List <Entry> entries;
     DBHelper dbHelper;
 
@@ -19,10 +19,9 @@ public class EntryPool {
 
     private static EntryPool entryPool = null;
 
-    private EntryPool(Context c){
-        this.c = c;
+    private EntryPool(){
 
-        dbHelper = new DBHelper(c);
+        dbHelper = new DBHelper(App.getAppContext());
         load();
     }
 
@@ -93,12 +92,10 @@ public class EntryPool {
         entries.add(entry);
     }
 
-    public static EntryPool getPool(Context c){
+    public static EntryPool getPool(){
         if (entryPool == null){
-            entryPool = new EntryPool(c);
+            entryPool = new EntryPool();
         }
-
-        entryPool.c = c;
 
         return entryPool;
     }

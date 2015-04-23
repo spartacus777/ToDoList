@@ -1,0 +1,58 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        >
+
+
+        <TextView
+            android:id="@+id/tvTitleSize"
+            android:gravity="center"
+            style="@style/CustomText"
+            android:text="@string/title_text_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <SeekBar
+            android:id="@+id/seekBarTitleFont"
+            android:layout_below="@id/tvTitleSize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="5"
+            android:progress="2"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/tvDescrSize"
+            style="@style/CustomText"
+            android:gravity="center"
+            android:layout_below="@id/seekBarTitleFont"
+            android:text="@string/descr_text_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <SeekBar
+            android:id="@+id/seekBarDescrFont"
+            android:layout_below="@id/tvDescrSize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="5"
+            android:progress="2"
+            android:layout_centerHorizontal="true" />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

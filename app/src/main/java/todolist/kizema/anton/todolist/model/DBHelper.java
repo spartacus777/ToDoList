@@ -9,10 +9,10 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final String TABLE_NAME = "TILTLE_TABLE_NAME";
-    public static final String TITLE = "TILTLE_TITLE";
-    public static final String DESCRIPTIONS = "TILTLE_DESCRIPTIONS";
-    public static final String ALIVE = "TILTLE_ALIVE";
+    public static final String TABLE_NAME = "TITLE_TABLE_NAME";
+    public static final String TITLE = "TITLE_TITLE";
+    public static final String DESCRIPTIONS = "TITLE_DESCRIPTIONS";
+    public static final String ALIVE = "TITLE_ALIVE";
 
 
     public DBHelper(Context context) {

@@ -1,7 +1,9 @@
 package todolist.kizema.anton.todolist.model;
 
 
-public class Entry {
+import java.io.Serializable;
+
+public class Entry implements Serializable {
 
     public String title;
     public String description;
@@ -39,4 +41,6 @@ public class Entry {
     public int hashCode() {
         return super.hashCode() + description.hashCode() + title.hashCode();
     }
+
+
 }

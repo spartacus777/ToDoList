@@ -5,12 +5,17 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="no_lists_detected">No ToDo lists yet. Create one!</string>
-
     <string name="add_descr">Enter description</string>
     <string name="add_title">Enter title</string>
     <string name="dialog_title">Enter values:</string>
-
-
+    <string name="change_dialog_title">Change values:</string>
+    <string name="descr_text_size">Description text size: %d</string>
+    <string name="title_text_size">Title text size: %d</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="setting_title">Settings</string>
+    <string name="main_act_title">To Do list</string>
+    <string name="edit_details_activity">Edit</string>
+    <string name="details_activity">Note</string>
 
 
 </resources>

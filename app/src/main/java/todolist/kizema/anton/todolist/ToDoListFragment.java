@@ -6,17 +6,27 @@ import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.util.Set;
+
 import at.markushi.ui.CircleButton;
-import todolist.kizema.anton.todolist.adapter.ToDoListAdapter;
+import todolist.kizema.anton.todolist.control.CustomMultiChoiceModeListener;
+import todolist.kizema.anton.todolist.control.adapter.ToDoListAdapter;
+import todolist.kizema.anton.todolist.model.Entry;
 import todolist.kizema.anton.todolist.model.EntryPool;
-import todolist.kizema.anton.todolist.view.AddEntryDialogFragment;
+import todolist.kizema.anton.todolist.view.EditEntryDialogFragment;
+import todolist.kizema.anton.todolist.view.ToDoViewEntry;
 
 
-public class ToDoListFragment extends Fragment implements ToDoListAdapter.AdapterDataListener{
+public class ToDoListFragment extends Fragment implements ToDoListAdapter.AdapterDataListener,
+        CustomMultiChoiceModeListener.OnEditListener, AdapterView.OnItemClickListener {
 
     private static final int DIALOG_CODE = 23243;
 
@@ -29,8 +39,15 @@ public class ToDoListFragment extends Fragment implements ToDoListAdapter.Adapte
 
     private OnToDoSelectedListener onToDoSelectedListener;
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        onToDoSelectedListener.onToDoSelected(adapter.getItem(position), position);
+    }
+
     public interface OnToDoSelectedListener {
-        public void onToDoSelected();
+        void onToDoSelected(Entry entry, int pos);
+        void onSettingsPressed();
+        void onRemove(Entry entry);
     }
 
     @Override
@@ -38,6 +55,7 @@ public class ToDoListFragment extends Fragment implements ToDoListAdapter.Adapte
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         return rootView;
     }
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -52,14 +70,41 @@ public class ToDoListFragment extends Fragment implements ToDoListAdapter.Adapte
 
     private void addNewEntry(){
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        AddEntryDialogFragment dlg = new AddEntryDialogFragment();
+        EditEntryDialogFragment dlg = new EditEntryDialogFragment();
         dlg.show(ft, "dialog");
     }
 
-    public void onOkBtnPressed(String title, String descr) {
-        entryPool.add(title, descr);
-        noItems.setVisibility(View.INVISIBLE);
-        adapter.notifyDataSetChanged();
+    public void onOkBtnPressed(Entry entry, String title, String descr) {
+        if (entry == null) {
+            //create new entry
+            entryPool.add(title, descr);
+            noItems.setVisibility(View.INVISIBLE);
+            adapter.notifyDataSetChanged();
+            todoList.post(new Runnable() {
+                @Override
+                public void run() {
+                    todoList.setSelection(adapter.getCount() - 1);
+                }
+            });
+        } else {
+            //edit entry
+            for (Entry e : entryPool.getEntries()){
+                if (e == entry){
+                    e.title = title;
+                    e.description = descr;
+
+                    adapter.notifyDataSetChanged();
+                    return;
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        onToDoSelectedListener = null;
     }
 
     @Override
@@ -68,9 +113,14 @@ public class ToDoListFragment extends Fragment implements ToDoListAdapter.Adapte
     }
 
     @Override
+    public void onRemove(Entry entry) {
+        onToDoSelectedListener.onRemove(entry);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -80,12 +130,32 @@ public class ToDoListFragment extends Fragment implements ToDoListAdapter.Adapte
         entryPool.save();
     }
 
+    public void notifyDataSetChanged(){
+        adapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
 
         entryPool.load();
         adapter.notifyDataSetChanged();
+        getActivity().setTitle(getString(R.string.main_act_title));
+    }
+
+    public void updateTextSizes(){
+        for (ToDoViewEntry entryContainer : adapter.getMap().values()){
+            entryContainer.updateTextSizes();
+        }
+    }
+
+    @Override
+    public void onEdit(Set<Integer> setPositions) {
+        for (Integer pos : setPositions){
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            EditEntryDialogFragment dlg = EditEntryDialogFragment.newInstance(entryPool.getEntries().get(pos));
+            dlg.show(ft, "dialog");
+        }
     }
 
     @Override
@@ -94,7 +164,7 @@ public class ToDoListFragment extends Fragment implements ToDoListAdapter.Adapte
 
         Log.i("ANT", "onActivityCreated");
 
-        entryPool = EntryPool.getPool(getActivity());
+        entryPool = EntryPool.getPool();
 
         noItems = (ViewGroup) getActivity().findViewById(R.id.noItemsLayout);
         noItems.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +179,12 @@ public class ToDoListFragment extends Fragment implements ToDoListAdapter.Adapte
         }
 
         todoList = (ListView) getActivity().findViewById(R.id.lists);
+        todoList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        adapter = new ToDoListAdapter(this, getActivity().getBaseContext(), entryPool);
+        CustomMultiChoiceModeListener customMultiChoiceModeListener = new CustomMultiChoiceModeListener(adapter);
+        customMultiChoiceModeListener.setOnEditListener(this);
+        todoList.setMultiChoiceModeListener(customMultiChoiceModeListener);
+        todoList.setOnItemClickListener(this);
 
         plusBtn = (CircleButton) getActivity().findViewById(R.id.plusBtn);
         plusBtn.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +194,24 @@ public class ToDoListFragment extends Fragment implements ToDoListAdapter.Adapte
             }
         });
 
-        adapter = new ToDoListAdapter(this, getActivity().getBaseContext(), entryPool);
         todoList.setAdapter(adapter);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(
+            Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            onToDoSelectedListener.onSettingsPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

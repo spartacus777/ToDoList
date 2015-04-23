@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="todolist.kizema.anton.todolist.DetailsFragment">
+
+
+    <EditText
+        style="@style/CustomText"
+        android:id="@+id/etTitle"
+        android:hint="@string/add_title"
+        android:layout_margin="@dimen/margin_norm"
+        android:maxLines="1"
+        android:lines="1"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:scrollHorizontally="true"
+        android:background="@drawable/title"
+        android:padding="10dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:textSize="@dimen/textSize"
+        android:id="@+id/etDescr"
+        android:layout_below="@id/etTitle"
+        android:hint="@string/add_descr"
+        android:layout_margin="@dimen/margin_norm"
+        android:background="@drawable/title"
+        android:padding="5dp"
+        android:gravity="left"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <at.markushi.ui.CircleButton
+        android:id="@+id/editButton"
+        android:layout_width="@dimen/norm_icon_size"
+        android:layout_height="@dimen/norm_icon_size"
+        android:src="@drawable/ic_pen"
+        android:padding="10dp"
+        android:layout_margin="@dimen/margin_plus"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        app:cb_color="@color/plusBtn"
+        app:cb_pressedRingWidth="10dip" />
+
+</RelativeLayout>

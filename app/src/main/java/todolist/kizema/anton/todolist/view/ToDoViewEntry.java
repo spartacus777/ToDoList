@@ -1,5 +1,7 @@
 package todolist.kizema.anton.todolist.view;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -9,12 +11,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import todolist.kizema.anton.todolist.App;
+import todolist.kizema.anton.todolist.AppConstants;
 import todolist.kizema.anton.todolist.R;
 import todolist.kizema.anton.todolist.model.Entry;
 
-/**
- * Created by Anton on 09.04.2015.
- */
 public class ToDoViewEntry {
 
     private static final int DURATION = 500;
@@ -63,9 +63,22 @@ public class ToDoViewEntry {
         this.onRemoveListener = onRemoveListener;
     }
 
+    public void updateTextSizes(){
+        SharedPreferences prefs = parent.getContext().getSharedPreferences(AppConstants.PREF_FILE_NAME, Context.MODE_PRIVATE);
+
+        int titleSize = prefs.getInt(AppConstants.TITLE_TEXT_SIZE, AppConstants.TITLE_TEXT_SIZE_DEF);
+        int descrSize = prefs.getInt(AppConstants.DESCR_TEXT_SIZE, AppConstants.DESCR_TEXT_SIZE_DEF);
+
+        titleView.setTextSize(titleSize);
+        descrView.setTextSize(descrSize);
+    }
+
     private void init() {
         titleView = (TextView) parent.findViewById(R.id.tvTitle);
         descrView = (TextView) parent.findViewById(R.id.tvDescr);
+
+        updateTextSizes();
+
         crossView = (ImageView) parent.findViewById(R.id.crossView);
         removeView = (ImageView) parent.findViewById(R.id.remove);
 
@@ -207,7 +220,6 @@ public class ToDoViewEntry {
 
             blurImage = new ImageView(parent.getContext());
 
-            Log.d("ANT", "parent.getHeight() "+parent.getMeasuredHeight()+" parent.getW "+parent.getMeasuredWidth());
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                     App.getPixel(50));
 
@@ -223,13 +235,15 @@ public class ToDoViewEntry {
     }
 
     public int getParentWidth(){
-        return (int) ( getW() - 2*parent.getContext().getResources().getDimension(R.dimen.activity_horizontal_margin) );
+        if ( parent.getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Log.d("ANT", " === ORIENTATION_PORTRAIT getParentWidth:" + (App.getW() - 2 * parent.getContext().
+                    getResources().getDimension(R.dimen.activity_horizontal_margin)));
+            return (int) (App.getW() - 2 * parent.getContext().getResources().getDimension(R.dimen.activity_horizontal_margin));
+        }
+
+        Log.d("ANT", " === YOU getParentWidth:" + (App.getH() - 4*parent.getContext().getResources().
+                getDimension(R.dimen.activity_vertical_margin))/2 + "App.getH() : "+App.getH());
+        return (int) ( (App.getH() - 4*parent.getContext().getResources().getDimension(R.dimen.activity_vertical_margin))/2 );
     }
 
-    public int getW(){
-        if ( parent.getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-            return App.getW();
-
-        return  App.getH();
-    }
 }

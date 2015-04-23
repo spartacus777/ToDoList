@@ -1,4 +1,4 @@
-package todolist.kizema.anton.todolist.adapter;
+package todolist.kizema.anton.todolist.control.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -26,6 +26,7 @@ public class ToDoListAdapter extends BaseAdapter implements ToDoViewEntry.OnRemo
 
     public interface AdapterDataListener{
         void onEmpty();
+        void onRemove(Entry entry);
     }
 
     public ToDoListAdapter(AdapterDataListener listener, Context context, EntryPool pool) {
@@ -39,16 +40,20 @@ public class ToDoListAdapter extends BaseAdapter implements ToDoViewEntry.OnRemo
         map = new HashMap<View, ToDoViewEntry>();
     }
 
+    public Map<View, ToDoViewEntry> getMap(){
+        return map;
+    }
+
     @Override
     public void onRemove(Entry entry){
         pool.remove(entry);
 
         if (getCount() == 0){
             listener.onEmpty();
-            return;
         }
 
         notifyDataSetChanged();
+        listener.onRemove(entry);
     }
 
     @Override

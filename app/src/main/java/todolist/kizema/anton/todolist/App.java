@@ -14,16 +14,27 @@ public class App extends Application {
     private static final int WIDTH_HD = 1080;
     private static final int HEIGHT_HD = 1920;
 
+    private static Context context;
+
     @Override
     public void onCreate(){
         super.onCreate();
         init();
     }
 
-    private void init(){
+    public static Context getAppContext() {
+        return context;
+    }
 
+    private void init(){
+        context = getApplicationContext();
         height = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getHeight();
         width = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getWidth();
+        if (height < width){
+            int tmp = width;
+            width = height;
+            height = tmp;
+        }
 
         metrics = getResources().getDisplayMetrics();
     }
@@ -48,5 +59,8 @@ public class App extends Application {
         return (int)(metrics.density * dpi);
     }
 
+    public static float getSP( float px) {
+        return px/metrics.scaledDensity;
+    }
 
 }
