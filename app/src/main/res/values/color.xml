@@ -15,7 +15,10 @@
     <color name="blur_color">#D9d7d6d6</color>
 
     <color name="ab_color">#f98a10</color>
+    <color name="ab_color_transparent">#CCf98a10</color>
     <color name="ab_edit_color">#1047f9</color>
+    <color name="ab_color_edit_transparent">#CC1047f9</color>
+
     <color name="plusBtn">@color/ab_color</color>
 
 

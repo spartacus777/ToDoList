@@ -62,5 +62,4 @@ public class App extends Application {
     public static float getSP( float px) {
         return px/metrics.scaledDensity;
     }
-
 }

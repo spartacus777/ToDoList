@@ -10,4 +10,6 @@ public class AppConstants {
     public static final int TITLE_TEXT_SIZE_DEF = 18;
     public static final int DESCR_TEXT_SIZE_DEF = 10;
 
+    public static final int FLOAT_BTN_DURATION = 400;
+
 }

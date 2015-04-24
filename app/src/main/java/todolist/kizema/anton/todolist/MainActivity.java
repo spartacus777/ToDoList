@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 
@@ -66,6 +68,11 @@ public class MainActivity extends Activity implements ToDoListFragment.OnToDoSel
         getActionBar().setDisplayShowHomeEnabled(true);
         getActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
                 .getColor(R.color.ab_color)));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            View container = findViewById(R.id.container);
+            container.setElevation(30);
+        }
     }
 
     private void makeActionOverflowMenuShown() {

@@ -3,6 +3,7 @@ package todolist.kizema.anton.todolist.view;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -18,7 +20,9 @@ import java.util.Set;
 
 import at.markushi.ui.CircleButton;
 import todolist.kizema.anton.todolist.R;
+import todolist.kizema.anton.todolist.app.App;
 import todolist.kizema.anton.todolist.control.CustomMultiChoiceModeListener;
+import todolist.kizema.anton.todolist.control.FloatingButtonControll;
 import todolist.kizema.anton.todolist.control.ToDoViewEntry;
 import todolist.kizema.anton.todolist.control.adapter.ToDoListAdapter;
 import todolist.kizema.anton.todolist.model.Entry;
@@ -192,10 +196,55 @@ public class ToDoListFragment extends Fragment implements ToDoListAdapter.Adapte
         todoList.setOnItemClickListener(this);
 
         plusBtn = (CircleButton) getActivity().findViewById(R.id.plusBtn);
+
+
+        int height;
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            height = App.getH();
+        } else {
+            height = App.getW();
+        }
+
+        final FloatingButtonControll floatingButtonControll = new FloatingButtonControll(plusBtn, height - (
+                2*getResources().getDimension(R.dimen.norm_icon_size) + getResources().getDimension(R.dimen.margin_plus)
+                + 2*getResources().getDimension(R.dimen.activity_vertical_margin)));
         plusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addNewEntry();
+            }
+        });
+
+        todoList.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            int oldFirstVisibleItem = 0;
+            int oldTop;
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            }
+
+            @Override
+            public void onScroll(AbsListView absView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                View view = todoList.getChildAt(0);
+                int top = (view == null) ? 0 : view.getTop();
+
+                if (firstVisibleItem == oldFirstVisibleItem) {
+                    if (top > oldTop) {
+                        floatingButtonControll.onScroll(true);
+                    } else if (top < oldTop) {
+                        floatingButtonControll.onScroll(false);
+                    }
+                } else {
+                    if (firstVisibleItem < oldFirstVisibleItem) {
+                        floatingButtonControll.onScroll(true);
+                    } else {
+                        floatingButtonControll.onScroll(false);
+                    }
+                }
+
+                oldTop = top;
+                oldFirstVisibleItem = firstVisibleItem;
             }
         });
 

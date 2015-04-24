@@ -4,6 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="todolist.kizema.anton.todolist.view.DetailsFragment">
 
 
@@ -32,6 +36,7 @@
         android:layout_below="@id/etTitle"
         android:hint="@string/add_descr"
         android:layout_margin="@dimen/margin_plus"
+        android:focusable="true"
         android:background="@drawable/title"
         android:padding="5dp"
         android:gravity="left"
