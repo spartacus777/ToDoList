@@ -29,6 +29,8 @@
             android:layout_below="@id/tvTitleSize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:thumb="@drawable/apptheme_scrubber_control_selector_holo_light"
+            android:progressDrawable="@drawable/apptheme_scrubber_progress_horizontal_holo_light"
             android:max="5"
             android:progress="2"
             android:layout_centerHorizontal="true" />
@@ -48,6 +50,8 @@
             android:layout_below="@id/tvDescrSize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:thumb="@drawable/apptheme_scrubber_control_selector_holo_light"
+            android:progressDrawable="@drawable/apptheme_scrubber_progress_horizontal_holo_light"
             android:max="5"
             android:progress="2"
             android:layout_centerHorizontal="true" />

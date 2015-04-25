@@ -7,11 +7,4 @@
         android:icon="@drawable/ic_action_ok"
         android:showAsAction="always" />
 
-    <item
-        android:id="@+id/action_share"
-        android:title="@string/share"
-        android:orderInCategory="100"
-        android:icon="@drawable/ic_share"
-        android:showAsAction="ifRoom" />
-
 </menu>

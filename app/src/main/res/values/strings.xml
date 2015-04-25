@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">ToDoList</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">To Do notes</string>
     <string name="action_settings">Settings</string>
-    <string name="no_lists_detected">No ToDo lists yet. Create one!</string>
-    <string name="add_descr">Enter description</string>
-    <string name="add_title">Enter title</string>
-    <string name="dialog_title">Enter values:</string>
-    <string name="change_dialog_title">Change values:</string>
+    <string name="no_lists_detected">No To Do notes yet. Create one!</string>
+    <string name="add_descr">Description</string>
+    <string name="add_title">Title</string>
+    <string name="dialog_title">New Note</string>
+    <string name="change_dialog_title">Edit Note</string>
     <string name="descr_text_size">Description text size: %d</string>
     <string name="title_text_size">Title text size: %d</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="setting_title">Settings</string>
-    <string name="main_act_title">To Do list</string>
-    <string name="edit_details_activity">Edit</string>
+    <string name="setting_title">@string/action_settings</string>
+    <string name="main_act_title">To Do notes</string>
+    <string name="edit_details_activity">Edit note</string>
     <string name="details_activity">Note</string>
+    <string name="share_using">Share note via:</string>
+    <string name="share">Share</string>
+    <string name="edit">edit</string>
+    <string name="delete">delete</string>
+
+
 
 
 </resources>

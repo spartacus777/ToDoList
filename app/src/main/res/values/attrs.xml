@@ -3,4 +3,9 @@
         <attr name="todotitle" format="string" />
         <attr name="tododescription" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="MinSeekBar">
+        <attr name="min_value" format="integer" />
+    </declare-styleable>
+
 </resources>

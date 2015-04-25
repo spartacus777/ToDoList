@@ -3,6 +3,7 @@ package todolist.kizema.anton.todolist.view;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -36,14 +37,15 @@ public class DetailsFragment extends Fragment {
 
     private CircleButton editButton;
     private EditText etTitle, etDescr;
+
     private boolean isEditMode = false;
+    private boolean enableEditMode = false;
 
     private String savedTitle, savedDescr;
-
     private Entry entry;
     private int pos;
 
-    private MenuItem menuItem;
+    private MenuItem menuItemOk, menuItemShare, menuItemSettings;
 
     private OnUpdateAdapterListener listener;
 
@@ -61,10 +63,6 @@ public class DetailsFragment extends Fragment {
         return fragment;
     }
 
-    public DetailsFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.i("ANT", "DetailsFragment :: onActivityCreated");
@@ -74,7 +72,15 @@ public class DetailsFragment extends Fragment {
         etDescr = (EditText) getActivity().findViewById(R.id.etDescr);
         editButton = (CircleButton) getActivity().findViewById(R.id.editButton);
 
-        enable(false);
+        if (etTitle == null){
+            return;
+        }
+
+        if (enableEditMode){
+            isEditMode = true;
+            enableEditMode = false;
+        }
+        enable(isEditMode);
 
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,6 +98,10 @@ public class DetailsFragment extends Fragment {
             }
         }
 
+        initFloatingBtn();
+    }
+
+    private void initFloatingBtn(){
         int height;
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
             height = App.getH();
@@ -124,6 +134,7 @@ public class DetailsFragment extends Fragment {
                 floatingButtonControll.onScroll(true);
             }
         });
+
         etDescr.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -133,6 +144,17 @@ public class DetailsFragment extends Fragment {
         });
     }
 
+    public boolean onBackPressed(){
+        if (isEditMode){
+            enable(false);
+            etTitle.setText(savedTitle);
+            etDescr.setText(savedDescr);
+            return false;
+        }
+        getActivity().getFragmentManager().popBackStack();
+        return true;
+    }
+
     public int getPos(){
         return pos;
     }
@@ -140,15 +162,22 @@ public class DetailsFragment extends Fragment {
     public void setEntry(Entry entry, int pos){
         this.entry = entry;
         this.pos = pos;
-        enable(false);
 
         etTitle.setText(entry.title);
         etDescr.setText(entry.description);
     }
 
     private void enable(boolean enable){
-        if (menuItem != null) {
-            menuItem.setVisible(enable);
+        if (menuItemSettings != null){
+            menuItemSettings.setVisible(!enable);
+        }
+
+        if (menuItemOk != null) {
+            menuItemOk.setVisible(enable);
+        }
+
+        if (menuItemShare != null){
+            menuItemShare.setVisible(!enable);
         }
 
         if (enable){
@@ -212,6 +241,20 @@ public class DetailsFragment extends Fragment {
         isEditMode = enable;
     }
 
+    public boolean isEditMode(){
+        return isEditMode;
+    }
+
+    public void editMode(boolean land){
+        Log.i("ANT", "DetailsFragment :: EDIT_MODE");
+        if (land) {
+            enable(true);
+            return;
+        }
+
+        enableEditMode = true;
+    }
+
     public void onEditClicked(){
         enable(!isEditMode);
         if (!isEditMode){
@@ -236,6 +279,7 @@ public class DetailsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Log.i("ANT", "DetailsFragment :: onCreate");
         setHasOptionsMenu(true);
+        setRetainInstance(false);
         getActivity().getActionBar().setDisplayShowHomeEnabled(true);
     }
 
@@ -249,6 +293,7 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
         Log.i("ANT", "DetailsFragment :: onAttach");
         listener = (OnUpdateAdapterListener) activity;
     }
@@ -270,19 +315,21 @@ public class DetailsFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
-                if (isEditMode){
-                    enable(false);
-                    etTitle.setText(savedTitle);
-                    etDescr.setText(savedDescr);
-                    return true;
-                }
-                getActivity().onBackPressed();
+                onBackPressed();
                 return true;
             case R.id.action_done:
                 save();
                 enable(false);
                 return true;
 
+            case R.id.action_share:
+                String shareBody = etDescr.getText().toString();
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, etTitle.getText().toString());
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -292,8 +339,12 @@ public class DetailsFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.details_menu, menu);
 
-        menuItem = menu.findItem(R.id.action_done);
-        menuItem.setVisible(false);
+        menuItemOk = menu.findItem(R.id.action_done);
+        menuItemOk.setVisible(false);
+
+        menuItemShare = menu.findItem(R.id.action_share);
+
+        menuItemSettings = menu.findItem(R.id.action_settings);
     }
 
     public Entry getEntry(){

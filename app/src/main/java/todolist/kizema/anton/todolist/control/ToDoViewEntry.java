@@ -3,16 +3,15 @@ package todolist.kizema.anton.todolist.control;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import todolist.kizema.anton.todolist.R;
 import todolist.kizema.anton.todolist.app.App;
 import todolist.kizema.anton.todolist.app.AppConstants;
-import todolist.kizema.anton.todolist.R;
 import todolist.kizema.anton.todolist.model.Entry;
 
 public class ToDoViewEntry {
@@ -115,7 +114,6 @@ public class ToDoViewEntry {
         }
 
         private void reset(boolean isAlive){
-            Log.d("ANT", "RESET:: isAlive "+isAlive);
             if (isAlive) {
                 blurImage.setX(getParentWidth());
                 crossView.setX(posX);
@@ -139,19 +137,16 @@ public class ToDoViewEntry {
                     return true;
 
                 case MotionEvent.ACTION_MOVE:
-                    Log.d("ANT", "event.getX():"+event.getX() + "  event.getRawX():"+event.getRawX() +"  final coords x:"+(event.getRawX()- crossView.getWidth()/2));
                     crossView.setX(event.getRawX() - crossView.getWidth() / 2);
                     blurImage.setX(crossView.getX());
                     return true;
 
                 case MotionEvent.ACTION_UP:
-                    Log.d("ANT", "ACTION_UP");
                     userInteraction = false;
                     pen_up();
                     touchUpCancel();
                     break;
                 case MotionEvent.ACTION_CANCEL:
-                    Log.d("ANT", "ACTION_CANCEL");
                     userInteraction = false;
                     pen_up();
                     touchUpCancel();
@@ -195,7 +190,6 @@ public class ToDoViewEntry {
             if (dur<0)
                 dur = 10;
 
-            Log.d("ANT", "posX "+posX);
             crossView.animate().x(posX).setDuration(dur).start();
             blurImage.animate().x(getParentWidth()).setDuration(dur).start();
             removeView.animate().alpha(0f).setDuration(dur).start();
@@ -218,7 +212,6 @@ public class ToDoViewEntry {
 
             descrView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
             h += descrView.getMeasuredHeight();
-            Log.d("ANT", "HEIGHT : "+h);
 
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, h);
 
@@ -226,7 +219,6 @@ public class ToDoViewEntry {
         }
 
         public void init() {
-            Log.d("ANT", "onWindowFocusChanged");
 
             if (blurImage!=null) {
                 parent.removeView(blurImage);
@@ -247,13 +239,9 @@ public class ToDoViewEntry {
 
     public int getParentWidth(){
         if ( parent.getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Log.d("ANT", " === ORIENTATION_PORTRAIT getParentWidth:" + (App.getW() - 2 * parent.getContext().
-                    getResources().getDimension(R.dimen.activity_horizontal_margin)));
             return (int) (App.getW() - 2 * parent.getContext().getResources().getDimension(R.dimen.activity_horizontal_margin));
         }
 
-        Log.d("ANT", " === YOU getParentWidth:" + (App.getH() - 4*parent.getContext().getResources().
-                getDimension(R.dimen.activity_vertical_margin))/2 + "App.getH() : "+App.getH());
         return (int) ( (App.getH() - 4*parent.getContext().getResources().getDimension(R.dimen.activity_vertical_margin))/2 );
     }
 

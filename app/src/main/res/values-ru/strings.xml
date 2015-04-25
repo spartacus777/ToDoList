@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Заметки</string>
+    <string name="action_settings">Настройки</string>
+    <string name="no_lists_detected">Нету заметок. Создать!</string>
+    <string name="add_descr">Описание</string>
+    <string name="add_title">Название</string>
+    <string name="dialog_title">Новая заметка</string>
+    <string name="change_dialog_title">Редактировать</string>
+    <string name="descr_text_size">Размер текста: %d</string>
+    <string name="title_text_size">Размер названия: %d</string>
+    <string name="setting_title">@string/action_settings</string>
+    <string name="main_act_title">Заметник</string>
+    <string name="edit_details_activity">Редактировать</string>
+    <string name="details_activity">Заметка</string>
+    <string name="share_using">Отправить заметку с помощью:</string>
+    <string name="share">Отправить</string>
+    <string name="edit">Редактировать</string>
+    <string name="delete">Удалить</string>
+
+</resources>

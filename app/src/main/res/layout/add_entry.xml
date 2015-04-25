@@ -39,7 +39,12 @@
         android:background="@drawable/title"
         android:padding="5dp"
         android:gravity="left"
-        android:scrollbarStyle="insideInset"
+        android:scrollbarThumbVertical="@drawable/scrollbar_vertical_thumb"
+        android:scrollbarTrackVertical="@drawable/scrollbar_vertical_track"
+        android:scrollbarSize="3dip"
+        android:fastScrollEnabled="true"
+
+        android:scrollbarStyle="outsideInset"
         android:scrollbars="vertical"
         android:overScrollMode="always"
         android:layout_width="match_parent"

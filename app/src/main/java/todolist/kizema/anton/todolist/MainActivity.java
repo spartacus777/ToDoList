@@ -3,7 +3,6 @@ package todolist.kizema.anton.todolist;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -39,39 +38,66 @@ public class MainActivity extends Activity implements ToDoListFragment.OnToDoSel
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d("ANT", "MainActivity oncretae");
+        Log.d("ANT", "MainActivity onCreate()");
         makeActionOverflowMenuShown();
 
         getFragmentManager().addOnBackStackChangedListener(this);
         fragment = (ToDoListFragment) getFragmentManager().findFragmentByTag(LISTFRAGMENT);
+        frameDetailsFragment = (FrameLayout) findViewById(R.id.detailsFragment);
+        detailsFragment = (DetailsFragment) getFragmentManager().findFragmentByTag(DETAILS_FRAGMENT);
+        settingsFragment = (SettingsFragment) getFragmentManager().findFragmentByTag(SETTINGS_FRAGMENT);
+
         if (fragment == null){
-            createFragment();
+            fragment = new ToDoListFragment();
+            getFragmentManager().beginTransaction()
+                    .add(R.id.container, fragment, LISTFRAGMENT)
+                    .commit();
         }
 
-        frameDetailsFragment = (FrameLayout) findViewById(R.id.detailsFragment);
-        Log.i("ANT", "MainActivity 2");
+        if (getFragmentManager().getBackStackEntryCount() > 0 ) {
+            getFragmentManager().popBackStackImmediate();
+        }
+        destroyTmpFragments();
 
         if (frameDetailsFragment != null){
-            if (getFragmentManager().getBackStackEntryCount() > 0 ) {
-                getFragmentManager().popBackStack();
-            }
+            Log.i("ANT", "frameDetailsFragment != null");
 
             if (EntryPool.getPool().getEntries().size() > 0) {
-                detailsFragment = DetailsFragment.newInstance(EntryPool.getPool().getEntries().get(0), 0);
+                if (detailsFragment == null) {
+                    detailsFragment = DetailsFragment.newInstance(EntryPool.getPool().getEntries().get(0), 0);
+                }
 
                 getFragmentManager().beginTransaction()
-                        .add(R.id.detailsFragment, detailsFragment, DETAILS_FRAGMENT)
+                        .replace(R.id.detailsFragment, detailsFragment, DETAILS_FRAGMENT)
                         .commit();
             }
         }
 
         getActionBar().setDisplayShowHomeEnabled(true);
-        getActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
-                .getColor(R.color.ab_color)));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             View container = findViewById(R.id.container);
             container.setElevation(30);
+        }
+    }
+
+    private void destroyTmpFragments(){
+        if (detailsFragment != null && !detailsFragment.isVisible()) {
+            Log.d("ANT", "detailsFragment != null, Destroying");
+            getFragmentManager().beginTransaction()
+                    .remove(detailsFragment)
+                    .commit();
+
+            detailsFragment = null;
+        }
+
+        if (settingsFragment != null && !settingsFragment.isVisible()) {
+            Log.d("ANT", "settingsFragment != null, Destroying");
+            getFragmentManager().beginTransaction()
+                    .remove(settingsFragment)
+                    .commit();
+
+            settingsFragment = null;
         }
     }
 
@@ -87,25 +113,28 @@ public class MainActivity extends Activity implements ToDoListFragment.OnToDoSel
         } catch (Exception e) {}
     }
 
-    private void createFragment(){
-        fragment = new ToDoListFragment();
-
-        getFragmentManager().beginTransaction()
-                .add(R.id.container, fragment, LISTFRAGMENT)
-                .commit();
-    }
-
     @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0 ){
             if ( SETTINGS_FRAGMENT.equalsIgnoreCase(getFragmentManager().
                     getBackStackEntryAt(getFragmentManager().getBackStackEntryCount()-1).getName())){
-                Log.i("ANT", "onBackPressed");
                 fragment.updateTextSizes();
+                getFragmentManager().popBackStack();
+                return;
             }
 
-            getFragmentManager().popBackStack();
+            if ( DETAILS_FRAGMENT.equalsIgnoreCase(getFragmentManager().
+                    getBackStackEntryAt(getFragmentManager().getBackStackEntryCount()-1).getName())){
+                detailsFragment.onBackPressed();
+                return;
+            }
         } else {
+
+            if (frameDetailsFragment != null && detailsFragment != null && detailsFragment.isEditMode()){
+                detailsFragment.onBackPressed();
+                return;
+            }
+
             super.onBackPressed();
         }
     }
@@ -134,30 +163,35 @@ public class MainActivity extends Activity implements ToDoListFragment.OnToDoSel
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-
+        Log.d("ANT", "onRestoreInstanceState");
         int pos = savedInstanceState.getInt("KEY", 0);
-        if (pos != 0 && frameDetailsFragment != null) {//land
+        boolean isEditMode = savedInstanceState.getBoolean("EDIT_MODE");
+
+        if (frameDetailsFragment != null) {
+
             onToDoSelected(EntryPool.getPool().getEntries().get(pos), pos);
+
+            if (isEditMode){
+                detailsFragment.editMode(true);
+            }
+        }
+
+        if (isEditMode){
+            if (frameDetailsFragment == null ){
+                onToDoSelected(EntryPool.getPool().getEntries().get(pos), pos);
+                detailsFragment.editMode(false);
+            }
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        Log.d("ANT", "onSaveInstanceState");
         if (detailsFragment != null) {
             outState.putInt("KEY", detailsFragment.getPos());
-
-            getFragmentManager().beginTransaction()
-                    .remove(detailsFragment)
-                    .commit();
-        }
-
-        if (settingsFragment != null && settingsFragment.isAdded()){
-            Log.i("ANT", "REMOVE SettingsFragment");
-            getFragmentManager().beginTransaction()
-                    .remove(settingsFragment)
-                    .commit();
-
-            settingsFragment = null;
+            if  ( detailsFragment.isEditMode() ){
+                outState.putBoolean("EDIT_MODE", true);
+            }
         }
 
         super.onSaveInstanceState(outState);

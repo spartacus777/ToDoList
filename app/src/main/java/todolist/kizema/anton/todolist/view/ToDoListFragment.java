@@ -197,7 +197,6 @@ public class ToDoListFragment extends Fragment implements ToDoListAdapter.Adapte
 
         plusBtn = (CircleButton) getActivity().findViewById(R.id.plusBtn);
 
-
         int height;
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
             height = App.getH();
