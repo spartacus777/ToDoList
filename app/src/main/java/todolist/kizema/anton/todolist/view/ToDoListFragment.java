@@ -131,8 +131,6 @@ public class ToDoListFragment extends Fragment implements ToDoListAdapter.Adapte
     @Override
     public void onPause() {
         super.onPause();
-
-        entryPool.save();
     }
 
     public void notifyDataSetChanged(){
@@ -143,7 +141,6 @@ public class ToDoListFragment extends Fragment implements ToDoListAdapter.Adapte
     public void onResume() {
         super.onResume();
 
-        entryPool.load();
         adapter.notifyDataSetChanged();
         getActivity().setTitle(getString(R.string.main_act_title));
     }

@@ -81,6 +81,18 @@ public class MainActivity extends Activity implements ToDoListFragment.OnToDoSel
         }
     }
 
+    @Override
+    protected void onResume() {
+        EntryPool.getPool().load();
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        EntryPool.getPool().save();
+    }
+
     private void destroyTmpFragments(){
         if (detailsFragment != null && !detailsFragment.isVisible()) {
             Log.d("ANT", "detailsFragment != null, Destroying");
